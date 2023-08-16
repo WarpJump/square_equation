@@ -8,40 +8,12 @@ static const double kEpsilonLocality = 0.0001;
 
 static const int kInfiniteRoots = 10;
 
-inline int IsZero(double value) {
-  return (int)(fabs(value) < kEpsilonLocality);
-}
+inline int IsZero(double value) { return fabs(value) < kEpsilonLocality; }
 
-int RootOfLinearEquation(double b_coef, double c_coef, double* root) {
-  if (IsZero(b_coef)) {
-    if (IsZero(c_coef)) {
-      return kInfiniteRoots;
-    }
-    *root = 0;
-    return 0;
-  }
-  *root = -c_coef / b_coef;
-  return 1;
-}
+int RootOfLinearEquation(double b_coef, double c_coef, double* root);
 
 int RootsOfSquareEquation(double a_coef, double b_coef, double c_coef,
-                          double* root_1, double* root_2) {
-  if (IsZero(a_coef)) {
-    return RootOfLinearEquation(b_coef, c_coef, root_1);
-  }
-
-  double disc = b_coef * b_coef - 4 * a_coef * c_coef;
-  if (IsZero(disc)) {
-    *root_1 = -b_coef / (2 * a_coef);
-    return 1;
-  }
-  if (disc < 0) {
-    return 0;
-  }
-  *root_1 = (-b_coef + sqrt(disc)) / (2 * a_coef);
-  *root_2 = (-b_coef - sqrt(disc)) / (2 * a_coef);
-  return 2;
-}
+                          double* root_1, double* root_2);
 
 int main() {
   int num_of_roots;
@@ -73,4 +45,34 @@ int main() {
   }
   printf("no roots exist\n");
   return 0;
+}
+
+int RootOfLinearEquation(double b_coef, double c_coef, double* root) {
+  if (IsZero(b_coef)) {
+    if (IsZero(c_coef)) {
+      return kInfiniteRoots;
+    }
+    return 0;
+  }
+  *root = -c_coef / b_coef;
+  return 1;
+}
+
+int RootsOfSquareEquation(double a_coef, double b_coef, double c_coef,
+                          double* root_1, double* root_2) {
+  if (IsZero(a_coef)) {
+    return RootOfLinearEquation(b_coef, c_coef, root_1);
+  }
+
+  double disc = b_coef * b_coef - 4 * a_coef * c_coef;
+  if (IsZero(disc)) {
+    *root_1 = -b_coef / (2 * a_coef);
+    return 1;
+  }
+  if (disc < 0) {
+    return 0;
+  }
+  *root_1 = (-b_coef + sqrt(disc)) / (2 * a_coef);
+  *root_2 = (-b_coef - sqrt(disc)) / (2 * a_coef);
+  return 2;
 }
