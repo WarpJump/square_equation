@@ -1,44 +1,17 @@
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
-
-/* program that takes three floating-point numbers and solves square equation
- * assuming them as coefficients */
+enum NumOfRoots { Zero = 0, One = 1, Two = 2, Inf = 3, NotARoot = -1 };
 
 static const double kEpsilonLocality = 0.0001;
 
-enum NumOfRoots { Zero = 0, One = 1, Two = 2, Inf = 3, NotARoot = -1 };
-
-inline int IsZero(double value) {
-  return fabs(value) < kEpsilonLocality;
-}
-
-void ScanCoeffs(double* a_coef, double* b_coef, double* c_coef);
+inline int IsZero(double value) { return fabs(value) < kEpsilonLocality; }
 
 NumOfRoots RootOfLinearEquation(double b_coef, double c_coef, double* root);
 
 NumOfRoots RootsOfSquareEquation(double a_coef, double b_coef, double c_coef,
                                  double* root_1, double* root_2);
 
+void ScanCoeffs(double* a_coef, double* b_coef, double* c_coef);
+
 void PrintRoots(NumOfRoots num_of_roots, double root_1, double root_2);
-
-int main() {
-  NumOfRoots num_of_roots = NotARoot;
-  double a_coef = NAN;
-  double b_coef = NAN;
-  double c_coef = NAN;
-  double root_1 = NAN;
-  double root_2 = NAN;
-
-  ScanCoeffs(&a_coef, &b_coef, &c_coef);
-
-  num_of_roots =
-      RootsOfSquareEquation(a_coef, b_coef, c_coef, &root_1, &root_2);
-
-  PrintRoots(num_of_roots, root_1, root_2);
-
-  return 0;
-}
 
 void ScanCoeffs(double* a_coef, double* b_coef, double* c_coef) {
   assert(a_coef != b_coef && b_coef != c_coef && a_coef != b_coef);
@@ -49,6 +22,30 @@ void ScanCoeffs(double* a_coef, double* b_coef, double* c_coef) {
   scanf("%lf", a_coef);
   scanf("%lf", b_coef);
   scanf("%lf", c_coef);
+}
+void PrintRoots(NumOfRoots num_of_roots, double root_1, double root_2) {
+  switch (num_of_roots) {
+    case One:
+      printf("one root exist: %3.3lg \n", root_1);
+      break;
+
+    case Two:
+      printf("two roots exist: %3.3lg and %3.3lg \n", root_1, root_2);
+      break;
+
+    case Inf:
+      printf("infinite roots exist\n");
+      break;
+
+    case Zero:
+      printf("no roots exist\n");
+      break;
+
+    case NotARoot:
+    default:
+      printf("error\n");
+      break;
+  }
 }
 
 NumOfRoots RootOfLinearEquation(double b_coef, double c_coef, double* root) {
@@ -93,29 +90,4 @@ NumOfRoots RootsOfSquareEquation(double a_coef, double b_coef, double c_coef,
   *root_1 = (-b_coef + sqrt_disc) / (2 * a_coef);
   *root_2 = (-b_coef - sqrt_disc) / (2 * a_coef);
   return Two;
-}
-
-void PrintRoots(NumOfRoots num_of_roots, double root_1, double root_2) {
-  switch (num_of_roots) {
-    case One:
-      printf("one root exist: %3.3lg \n", root_1);
-      break;
-
-    case Two:
-      printf("two roots exist: %3.3lg and %3.3lg \n", root_1, root_2);
-      break;
-
-    case Inf:
-      printf("infinite roots exist\n");
-      break;
-
-    case Zero:
-      printf("no roots exist\n");
-      break;
-
-    case NotARoot:
-    default:
-      printf("error\n");
-      break;
-  }
 }
