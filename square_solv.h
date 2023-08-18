@@ -23,6 +23,7 @@ void ScanCoeffs(double* a_coef, double* b_coef, double* c_coef) {
   scanf("%lf", b_coef);
   scanf("%lf", c_coef);
 }
+
 void PrintRoots(NumOfRoots num_of_roots, double root_1, double root_2) {
   switch (num_of_roots) {
     case One:
