@@ -1,8 +1,14 @@
+/*!
+\file
+\brief File with functions definition
+*/
+
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
 
 #include "core.h"
+
 
 void ScanCoeffs(CoeffsAndRoots* equation) {
   assert(equation != nullptr);
