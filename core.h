@@ -3,6 +3,21 @@
 \brief Header file with function and enum description
 */
 
+#include <assert.h>
+#include <math.h>
+#include <stdio.h>
+
+/*!
+\brief Excepption controlling block.
+\param statement - boolian expression. If not true throws an error
+*/
+
+#define exception(statement)                     \
+  if (!(statement)) {                            \
+    printf("Error %s:%d\n", __func__, __LINE__); \
+    return;                                      \
+  }
+
 /*!
 \brief Enum needed to store number of roots
 */
@@ -15,18 +30,32 @@ enum NumOfRoots {
 };
 
 /*!
-\brief struct that stores coefficien of square equation, number of roots and
-values of roots
+ \brief struct that stores coefficien of square equation, number of roots and
+ values of roots
 */
 
 struct CoeffsAndRoots {
-  double a_coef = NAN;  ///< coefficient near x^2 in square equation.
-  double b_coef = NAN;  ///< coefficient near x in square equation.
-  double c_coef = NAN;  ///< constant in square equation.
-  NumOfRoots num_of_roots = NotARoot;  ///< number of roots
-  double root_1 = NAN;  ///< first root. Assigned to NAN if does not exist
-  double root_2 = NAN;  ///< second root. Assigned to NAN if does not exist
+  double a_coef;            ///< coefficient near x^2 in square equation.
+  double b_coef;            ///< coefficient near x in square equation.
+  double c_coef;            ///< constant in square equation.
+  NumOfRoots num_of_roots;  ///< number of roots
+  double root_1;            ///< first root. Assigned to NAN if does not exist
+  double root_2;            ///< second root. Assigned to NAN if does not exist
 };
+
+/*!
+ \brief assignes default fields of struct.
+ \param structure - pointer to structure to be assigned
+*/
+
+void Initialize(CoeffsAndRoots* structure);
+
+/*!
+ \brief assignes poison to fields of struct.
+ \param structure - pointer to structure to be assigned
+*/
+
+void Destroy(CoeffsAndRoots* structure);
 
 /*!
 \brief constant determining permissible error for double comparison
@@ -38,11 +67,10 @@ static const double kEpsilonLocality = 0.005;
  \brief Function that compares two variables of type double
  \param one, two - comparable doubles
  \return 1 - if doubles are equal, 0 otherwise
-
 */
 
-inline int CompareDoubles(double one, double two) {
-  return static_cast<int>(fabs(one - two) < kEpsilonLocality);
+inline bool CompareDoubles(double one, double two) {
+  return fabs(one - two) < kEpsilonLocality;
 }
 
 /*! function that scans coefficients, number of roots and roots from file with
@@ -64,12 +92,14 @@ void ScanCoeffs(CoeffsAndRoots* equation);
 
 /*!
  \brief Function that compares root from struct "test" as function result and
- answer from file \param test - struct with computed root \param ans_1 - correct
- ans from file \return 1 - if root is correct, 0 otherwise
+ answer from file.
+ \param test - struct with computed root.
+ \param ans_1 - correct ans from file.
+ \return 1 - if root is correct, 0 otherwise
 
 */
 
-int CompareOneRoot(CoeffsAndRoots* test, double ans_1);
+bool CompareOneRoot(CoeffsAndRoots* test, double ans_1);
 
 /*!
  \brief Function that compares two roots from struct "test" as function result
@@ -81,7 +111,7 @@ int CompareOneRoot(CoeffsAndRoots* test, double ans_1);
 
 */
 
-int CompareTwoRoots(CoeffsAndRoots* test, double ans_1, double ans_2);
+bool CompareTwoRoots(CoeffsAndRoots* test, double ans_1, double ans_2);
 
 /*!
  \brief Function that desides to call comparison functions
@@ -94,7 +124,7 @@ int CompareTwoRoots(CoeffsAndRoots* test, double ans_1, double ans_2);
  comparison functions or one root comparison functions, and returns their result
 */
 
-int RootComparison(CoeffsAndRoots* test, double ans_1, double ans_2);
+bool CompareRoots(CoeffsAndRoots* test, double ans_1, double ans_2);
 
 /*!
  \brief Manager function for square equation
@@ -114,7 +144,7 @@ void SolveEquation(CoeffsAndRoots* equation);
  effect
 */
 
-void RootOfLinearEquation(CoeffsAndRoots* equation);
+void FindRootOfLinearEquation(CoeffsAndRoots* equation);
 
 /*!
  \brief Function that solves square equation
@@ -123,7 +153,7 @@ void RootOfLinearEquation(CoeffsAndRoots* equation);
  itself in "equation" as side effect
 */
 
-void RootsOfSquareEquation(CoeffsAndRoots* equation);
+void FindRootsOfSquareEquation(CoeffsAndRoots* equation);
 
 /*!
  \brief Function that prints roots
@@ -137,7 +167,7 @@ void PrintRoots(CoeffsAndRoots* equation);
  \brief Primary function for square equation solving
 */
 
-void RealMode();
+void UserMode();
 
 /*!
  \brief Primary function for computing test mode

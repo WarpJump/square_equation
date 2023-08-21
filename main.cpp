@@ -9,16 +9,14 @@
  program runs in real mode: takes three floating-point numbers and solves square
  equation assuming them as coefficients
 */
-#define TEST true
-
 /*! Main program. Decides in compile-time in which mode to run.
  */
 
-int main() {
-#if TEST
+auto main() -> int {
+#ifdef TEST
   TestMode();
 #else
-  RealMode();
+  UserMode();
 #endif
 
   return 0;

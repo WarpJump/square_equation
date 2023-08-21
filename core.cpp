@@ -3,15 +3,28 @@
 \brief File with functions definition
 */
 
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
-
 #include "core.h"
 
+void Initialize(CoeffsAndRoots* structure) {
+  structure->a_coef = NAN;
+  structure->b_coef = NAN;
+  structure->c_coef = NAN;
+  structure->num_of_roots = NotARoot;
+  structure->root_1 = NAN;
+  structure->root_2 = NAN;
+}
+
+void Destroy(CoeffsAndRoots* structure) {
+  structure->a_coef = NAN;
+  structure->b_coef = NAN;
+  structure->c_coef = NAN;
+  structure->num_of_roots = NotARoot;
+  structure->root_1 = NAN;
+  structure->root_2 = NAN;
+}
 
 void ScanCoeffs(CoeffsAndRoots* equation) {
-  assert(equation != nullptr);
+  exception(equation != nullptr);
   scanf("%lf", &(equation->a_coef));
   scanf("%lf", &(equation->b_coef));
   scanf("%lf", &(equation->c_coef));
@@ -19,6 +32,10 @@ void ScanCoeffs(CoeffsAndRoots* equation) {
 
 void ScanData(FILE* data_file, CoeffsAndRoots* test, int* num_of_roots,
               double* ans_1, double* ans_2) {
+  exception(test != nullptr);
+  exception(ans_1 != ans_2);
+  exception((ans_1 != nullptr) && (ans_2 != nullptr));
+
   fscanf(data_file, "%lf%lf%lf", &(test->a_coef), &(test->b_coef),
          &(test->c_coef));
   fscanf(data_file, "%d%lf%lf", num_of_roots, ans_1, ans_2);
@@ -51,27 +68,27 @@ void PrintRoots(CoeffsAndRoots* equation) {
 }
 
 void SolveEquation(CoeffsAndRoots* equation) {
-  assert(equation != nullptr);
-  assert(!isnan(equation->a_coef) && !isnan(equation->b_coef) &&
-         !isnan(equation->c_coef));
-  assert(!isinf(equation->a_coef) && !isinf(equation->b_coef) &&
-         !isinf(equation->c_coef));
+  exception(equation != nullptr);
+  exception(!isnan(equation->a_coef) && !isnan(equation->b_coef) &&
+            !isnan(equation->c_coef));
+  exception(!isinf(equation->a_coef) && !isinf(equation->b_coef) &&
+            !isinf(equation->c_coef));
 
-  if (CompareDoubles(equation->a_coef, 0) != 0) {
-    RootOfLinearEquation(equation);
+  if (CompareDoubles(equation->a_coef, 0)) {
+    FindRootOfLinearEquation(equation);
     return;
   }
-  RootsOfSquareEquation(equation);
+  FindRootsOfSquareEquation(equation);
 }
 
-void RootOfLinearEquation(CoeffsAndRoots* equation) {
-  assert(equation != nullptr);
-  assert(!isnan(equation->b_coef) && !isnan(equation->c_coef));
-  assert(!isinf(equation->b_coef) && !isinf(equation->c_coef));
+void FindRootOfLinearEquation(CoeffsAndRoots* equation) {
+  exception(equation != nullptr);
+  exception(!isnan(equation->b_coef) && !isnan(equation->c_coef));
+  exception(!isinf(equation->b_coef) && !isinf(equation->c_coef));
 
-  if (CompareDoubles(equation->b_coef, 0) != 0) {
+  if (CompareDoubles(equation->b_coef, 0)) {
     equation->root_1 = NAN;
-    if (CompareDoubles(equation->c_coef, 0) != 0) {
+    if (CompareDoubles(equation->c_coef, 0)) {
       equation->num_of_roots = Inf;
       return;
     }
@@ -82,17 +99,17 @@ void RootOfLinearEquation(CoeffsAndRoots* equation) {
   equation->num_of_roots = One;
 }
 
-void RootsOfSquareEquation(CoeffsAndRoots* equation) {
-  assert(equation != nullptr);
-  assert(!CompareDoubles(equation->a_coef, 0));
-  assert(!isnan(equation->a_coef) && !isnan(equation->b_coef) &&
-         !isnan(equation->c_coef));
-  assert(!isinf(equation->a_coef) && !isinf(equation->b_coef) &&
-         !isinf(equation->c_coef));
+void FindRootsOfSquareEquation(CoeffsAndRoots* equation) {
+  exception(equation != nullptr);
+  exception(!CompareDoubles(equation->a_coef, 0));
+  exception(!isnan(equation->a_coef) && !isnan(equation->b_coef) &&
+            !isnan(equation->c_coef));
+  exception(!isinf(equation->a_coef) && !isinf(equation->b_coef) &&
+            !isinf(equation->c_coef));
 
-  double disc = equation->b_coef * equation->b_coef -
-                4 * equation->a_coef * equation->c_coef;
-  if (CompareDoubles(disc, 0) != 0) {
+  double const disc = equation->b_coef * equation->b_coef -
+                      4 * equation->a_coef * equation->c_coef;
+  if (CompareDoubles(disc, 0)) {
     equation->root_1 = -equation->b_coef / (2 * equation->a_coef);
     equation->num_of_roots = One;
     return;
@@ -102,45 +119,45 @@ void RootsOfSquareEquation(CoeffsAndRoots* equation) {
     equation->num_of_roots = Zero;
     return;
   }
-  double sqrt_disc = sqrt(disc);
+  double const sqrt_disc = sqrt(disc);
   equation->root_1 = (-equation->b_coef + sqrt_disc) / (2 * equation->a_coef);
   equation->root_2 = (-equation->b_coef - sqrt_disc) / (2 * equation->a_coef);
   equation->num_of_roots = Two;
 }
 
-int CompareOneRoot(CoeffsAndRoots* test, double ans_1) {
-  if (CompareDoubles(ans_1, test->root_1) == 0) {
+auto CompareOneRoot(CoeffsAndRoots* test, double ans_1) -> bool {
+  if (!CompareDoubles(ans_1, test->root_1)) {
     printf(
         "the only root does not match: correct ans is %lf, but programm "
         "returned %lf\n",
         ans_1, test->root_1);
-    return 0;
+    return false;
   }
   printf("test OK: correct ans is %lf, program returned %lf\n", ans_1,
          test->root_1);
-  return 1;
+  return true;
 }
 
-int CompareTwoRoots(CoeffsAndRoots* test, double ans_1, double ans_2) {
-  int correct = static_cast<int>(((CompareDoubles(ans_1, test->root_1) != 0) &&
-                                  (CompareDoubles(ans_2, test->root_2) != 0)) ||
-                                 ((CompareDoubles(ans_2, test->root_1) != 0) &&
-                                  (CompareDoubles(ans_1, test->root_2) != 0)));
-  if (correct == 0) {
+auto CompareTwoRoots(CoeffsAndRoots* test, double ans_1, double ans_2) -> bool {
+  bool const correct = ((CompareDoubles(ans_1, test->root_1) &&
+                         CompareDoubles(ans_2, test->root_2)) ||
+                        (CompareDoubles(ans_2, test->root_1) &&
+                         CompareDoubles(ans_1, test->root_2)));
+  if (!correct) {
     printf(
         "roots does not match: ans is %.3lf %.3lf, but program returned %.3lf "
         "%.3lf\n",
         ans_1, ans_2, test->root_1, test->root_2);
-    return 0;
+    return false;
   }
   printf(
       "test OK: roots are %.3lf and %.3lf, program returned %.3lf and %.3lf\n",
       ans_1, ans_2, test->root_1, test->root_2);
-  return 1;
+  return true;
 }
 
-int RootComparison(CoeffsAndRoots* test, double ans_1, double ans_2) {
-  int correct = 0;
+auto CompareRoots(CoeffsAndRoots* test, double ans_1, double ans_2) -> bool {
+  bool correct = false;
   switch (test->num_of_roots) {
     case One:
       correct = CompareOneRoot(test, ans_1);
@@ -150,22 +167,22 @@ int RootComparison(CoeffsAndRoots* test, double ans_1, double ans_2) {
       break;
     case Inf:
       printf("test Ok: infinite roots exist\n");
-      correct = 1;
+      correct = true;
       break;
     case Zero:
       printf("test Ok: no roots exist\n");
-      correct = 1;
+      correct = true;
       break;
     case NotARoot:
     default:
       printf("test OK\n");
-      return 1;
+      return true;
   }
   return correct;
 }
 
-void RealMode() {
-  CoeffsAndRoots equation;
+void UserMode() {
+  CoeffsAndRoots equation{};
 
   ScanCoeffs(&equation);
 
@@ -179,14 +196,14 @@ void TestMode() {
   double ans_2 = NAN;
   int num_of_roots = 0;
 
-  FILE* data_file = fopen("data.txt", "r");
+  FILE* data_file = fopen("data.txt", "re");
 
-  int num_of_tests;
+  int num_of_tests = 0;
   int correct_tests = 0;
 
   fscanf(data_file, "%d", &num_of_tests);
 
-  CoeffsAndRoots test;
+  CoeffsAndRoots test{};
 
   for (int i = 0; i < num_of_tests; ++i) {
     ScanData(data_file, &test, &num_of_roots, &ans_1, &ans_2);
@@ -196,7 +213,7 @@ void TestMode() {
       printf("number of roots does not match!\n");
       continue;
     }
-    correct_tests += RootComparison(&test, ans_1, ans_2);
+    correct_tests += static_cast<int>(CompareRoots(&test, ans_1, ans_2));
   }
   printf("tests correct %d / %d\n", correct_tests, num_of_tests);
   fclose(data_file);
