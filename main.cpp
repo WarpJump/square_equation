@@ -12,7 +12,7 @@
 /*! Main program. Decides in compile-time in which mode to run.
  */
 
-auto main() -> int {
+int main() {
 #ifdef TEST
   TestMode();
 #else
