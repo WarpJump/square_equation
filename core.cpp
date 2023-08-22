@@ -184,11 +184,15 @@ auto CompareRoots(CoeffsAndRoots* test, double ans_1, double ans_2) -> bool {
 void UserMode() {
   CoeffsAndRoots equation{};
 
+  Initialize(&equation);
+
   ScanCoeffs(&equation);
 
   SolveEquation(&equation);
 
   PrintRoots(&equation);
+
+  Destroy(&equation);
 }
 
 void TestMode() {
@@ -217,4 +221,6 @@ void TestMode() {
   }
   printf("tests correct %d / %d\n", correct_tests, num_of_tests);
   fclose(data_file);
+
+  Destroy(&test);
 }

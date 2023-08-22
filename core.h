@@ -35,12 +35,12 @@ enum NumOfRoots {
 */
 
 struct CoeffsAndRoots {
-  double a_coef;            ///< coefficient near x^2 in square equation.
-  double b_coef;            ///< coefficient near x in square equation.
-  double c_coef;            ///< constant in square equation.
-  NumOfRoots num_of_roots;  ///< number of roots
-  double root_1;            ///< first root. Assigned to NAN if does not exist
-  double root_2;            ///< second root. Assigned to NAN if does not exist
+  double a_coef = NAN;            ///< coefficient near x^2 in square equation.
+  double b_coef = NAN;            ///< coefficient near x in square equation.
+  double c_coef = NAN;            ///< constant in square equation.
+  NumOfRoots num_of_roots = NotARoot;  ///< number of roots
+  double root_1 = NAN;            ///< first root. Assigned to NAN if does not exist
+  double root_2 = NAN;            ///< second root. Assigned to NAN if does not exist
 };
 
 /*!
