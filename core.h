@@ -12,11 +12,18 @@
 \param statement - boolian expression. If not true throws an error
 */
 
-#define exception(statement)                     \
-  if (!(statement)) {                            \
-    printf("Error %s:%d\n", __func__, __LINE__); \
-    return;                                      \
-  }
+#ifndef NDEBUG
+#define AssertError(statement, error_code)                           \
+  do {                                                               \
+    if (!(statement)) {                                              \
+      fprintf(stderr, "Error in function %s in line %d\n", __func__, \
+              __LINE__);                                             \
+      return error_code;                                             \
+    }                                                                \
+  } while (0)
+#else
+#define AssertError(...) (return Ok;)
+#endif
 
 /*!
 \brief Enum needed to store number of roots
@@ -30,17 +37,30 @@ enum NumOfRoots {
 };
 
 /*!
+\brief Enum needed to store error codes
+*/
+
+enum ErrorCodes {
+  NullPointer = 1,    ///< if pointer is null
+  SamePointers = 2,   ///< if two different values have same pointer
+  InfiniteFloat = 3,  ///< if value if inf
+  ZeroDivision = 4,   ///< if divider is zero
+  Ok = 0              ///< if everything is normal
+
+};
+
+/*!
  \brief struct that stores coefficien of square equation, number of roots and
  values of roots
 */
 
 struct CoeffsAndRoots {
-  double a_coef = NAN;            ///< coefficient near x^2 in square equation.
-  double b_coef = NAN;            ///< coefficient near x in square equation.
-  double c_coef = NAN;            ///< constant in square equation.
+  double a_coef = NAN;  ///< coefficient near x^2 in square equation.
+  double b_coef = NAN;  ///< coefficient near x in square equation.
+  double c_coef = NAN;  ///< constant in square equation.
   NumOfRoots num_of_roots = NotARoot;  ///< number of roots
-  double root_1 = NAN;            ///< first root. Assigned to NAN if does not exist
-  double root_2 = NAN;            ///< second root. Assigned to NAN if does not exist
+  double root_1 = NAN;  ///< first root. Assigned to NAN if does not exist
+  double root_2 = NAN;  ///< second root. Assigned to NAN if does not exist
 };
 
 /*!
@@ -58,18 +78,14 @@ void Initialize(CoeffsAndRoots* structure);
 void Destroy(CoeffsAndRoots* structure);
 
 /*!
-\brief constant determining permissible error for double comparison
-*/
-
-static const double kEpsilonLocality = 0.005;
-
-/*!
  \brief Function that compares two variables of type double
  \param one, two - comparable doubles
  \return 1 - if doubles are equal, 0 otherwise
 */
 
 inline bool CompareDoubles(double one, double two) {
+  static const double kEpsilonLocality =
+      0.005;  //< constant determining permissible error for double comparison
   return fabs(one - two) < kEpsilonLocality;
 }
 
@@ -77,8 +93,8 @@ inline bool CompareDoubles(double one, double two) {
  tests
 */
 
-void ScanData(FILE* data_file, CoeffsAndRoots* test, int* num_of_roots,
-              double* ans_1, double* ans_2);
+ErrorCodes ScanData(FILE* data_file, CoeffsAndRoots* test, int* num_of_roots,
+                    double* ans_1, double* ans_2);
 
 /*!
   function that scans coefficients of square equation from standart input
@@ -88,7 +104,7 @@ void ScanData(FILE* data_file, CoeffsAndRoots* test, int* num_of_roots,
   Does not return anything, because side effect is modifiying struct
 */
 
-void ScanCoeffs(CoeffsAndRoots* equation);
+ErrorCodes ScanCoeffs(CoeffsAndRoots* equation);
 
 /*!
  \brief Function that compares root from struct "test" as function result and
@@ -127,6 +143,13 @@ bool CompareTwoRoots(CoeffsAndRoots* test, double ans_1, double ans_2);
 bool CompareRoots(CoeffsAndRoots* test, double ans_1, double ans_2);
 
 /*!
+ \brief function for printing error messages
+ \param [in] code - error message
+*/
+
+void PrintErrorCode(ErrorCodes code);
+
+/*!
  \brief Manager function for square equation
  \param equation - struct with all needed fields
  Does not return anything, stores computed roots in "equation" as side
@@ -135,7 +158,7 @@ bool CompareRoots(CoeffsAndRoots* test, double ans_1, double ans_2);
  Manager function that desides to call linear or square equation solver
 */
 
-void SolveEquation(CoeffsAndRoots* equation);
+ErrorCodes SolveEquation(CoeffsAndRoots* equation);
 
 /*!
  \brief Function that solves linear equation
@@ -144,7 +167,7 @@ void SolveEquation(CoeffsAndRoots* equation);
  effect
 */
 
-void FindRootOfLinearEquation(CoeffsAndRoots* equation);
+ErrorCodes FindRootOfLinearEquation(CoeffsAndRoots* equation);
 
 /*!
  \brief Function that solves square equation
@@ -153,7 +176,7 @@ void FindRootOfLinearEquation(CoeffsAndRoots* equation);
  itself in "equation" as side effect
 */
 
-void FindRootsOfSquareEquation(CoeffsAndRoots* equation);
+ErrorCodes FindRootsOfSquareEquation(CoeffsAndRoots* equation);
 
 /*!
  \brief Function that prints roots
