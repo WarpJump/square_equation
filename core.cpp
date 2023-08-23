@@ -51,7 +51,7 @@ ErrorCodes ParseString(char *str, char first_symbol_to_find,
 
 char *CreateString(size_t valuable_size) {
   char *new_string =
-      reinterpret_cast<char *>(malloc(valuable_size + 1));  // TODO use calloc,
+      reinterpret_cast<char *>(calloc(valuable_size + 1, sizeof(char)));  // TODO use calloc,
   new_string[valuable_size] = '\0';
   return new_string;
 }
@@ -72,6 +72,8 @@ ErrorCodes ParseOneFlag(CoeffsAndRoots *equation, char *flag) {
   }
 
   if ((mi_sign == nullptr) || (eq_sign == nullptr)) {
+    printf("\033[0;31m Error: \033[0m");
+
     printf("Wrong symbols in flag arguments\n");
     return ErrorCodes::Ok;
   }
@@ -80,7 +82,6 @@ ErrorCodes ParseOneFlag(CoeffsAndRoots *equation, char *flag) {
   char *token = CreateString(kSizeOfToken);
   CopyFirstCharsString(token, mi_sign + 1, kSizeOfToken);
 
-  static const int kBase = 10;
   double value = strtold(eq_sign + 1, NULL);
 
   if ((*token) == 'a') {
@@ -98,9 +99,11 @@ ErrorCodes ParseOneFlag(CoeffsAndRoots *equation, char *flag) {
 ErrorCodes ParseCommandLine(CoeffsAndRoots *equation, int argc, char **argv) {
   AssertError(equation != nullptr, ErrorCodes::NullPointer);
   AssertError(argv != nullptr, ErrorCodes::NullPointer);
+
   equation->a_coef = 0;
   equation->b_coef = 0;
   equation->c_coef = 0;
+
   for (int i = 1; i < argc; ++i) {
     ParseOneFlag(equation, argv[i]);
   }
@@ -148,7 +151,7 @@ void PrintRoots(CoeffsAndRoots *equation) {
 
     case NotARoot:
     default:
-      printf("error\n");
+    printf("\033[0;31mError!\033[0m");
       break;
   }
 }
@@ -218,6 +221,8 @@ ErrorCodes FindRootsOfSquareEquation(CoeffsAndRoots *equation) {
 
 bool CompareOneRoot(CoeffsAndRoots *test, double ans_1) {
   if (!CompareDoubles(ans_1, test->root_1)) {
+    printf("\033[0;31m Error: \033[0m");
+
     printf(
         "the only root does not match: correct ans is %lf, but programm "
         "returned %lf\n",
@@ -235,6 +240,7 @@ bool CompareTwoRoots(CoeffsAndRoots *test, double ans_1, double ans_2) {
                          (CompareDoubles(ans_2, test->root_1) &&
                           CompareDoubles(ans_1, test->root_2)));
   if (!kCorrect) {
+    printf("\033[0;31m Error: \033[0m");
     printf(
         "roots does not match: ans is %.3lf %.3lf, but program returned %.3lf "
         "%.3lf\n",
@@ -253,17 +259,21 @@ bool CompareRoots(CoeffsAndRoots *test, double ans_1, double ans_2) {
     case One:
       correct = CompareOneRoot(test, ans_1);
       break;
+
     case Two:
       correct = CompareTwoRoots(test, ans_1, ans_2);
       break;
+
     case Inf:
       fprintf(stderr, "test Ok: infinite roots exist\n");
       correct = true;
       break;
+
     case Zero:
       fprintf(stderr, "test Ok: no roots exist\n");
       correct = true;
       break;
+
     case NotARoot:
     default:
       fprintf(stderr, "test OK\n");
@@ -273,6 +283,11 @@ bool CompareRoots(CoeffsAndRoots *test, double ans_1, double ans_2) {
 }
 
 void PrintErrorCode(ErrorCodes err_code) {
+  if(err_code == ErrorCodes::Ok){
+    return;
+  }
+
+  fprintf(stderr,"\033[0;31m Error! Function call incorrect:\n \033[0m");
   switch (err_code) {
     case NullPointer:
       fprintf(stderr, "User called function with null pointer\n");
@@ -290,7 +305,8 @@ void PrintErrorCode(ErrorCodes err_code) {
 
     case ZeroDivision:
       fprintf(stderr, "Function call with zero as divider.\n");
-      break;  // TODO more spaces!
+      break;
+
     case Ok:
     default:
       fprintf(stderr, "lol cringe\n");
