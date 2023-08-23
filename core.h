@@ -104,6 +104,63 @@ ErrorCodes ScanData(FILE* data_file, CoeffsAndRoots* test, int* num_of_roots,
                     double* ans_1, double* ans_2);
 
 /*!
+  \brief Function that takes a string and two characters, and founds pointers to last match of them in string
+  \param [in] str - pointer to string where to search
+  \param [in] first_symbol_to_find - first symbol will be searched in string
+  \param [in] second_symbol_to_find - second symbol will be searched in string
+  \param [out] first_char - pointer of last match of first_symbol_to_find in the string
+  \param [out] second_char - pointer of last match of second_symbol_to_find in the string
+
+*/
+
+ErrorCodes ParseString(char *str, char first_symbol_to_find, char second_symbol_to_find, char **first_char,
+                       char **second_char);
+
+
+/*!
+  \brief Function for creating string of given size in dynamic memory
+  \param [in] valuable_size - size of a string without terminating character
+
+  Actially creates a string size valuable_size + 1 to store terminating char
+*/
+char *CreateString(size_t valuable_size);
+
+/*!
+  \brief function that calls free on string
+  \param [in] old_string - pointer to string to be destroyed
+*/
+
+void DestroyString(char *old_string);
+
+/*!
+  \brief Copy one string to anoter 
+  \param [out] target - where to store string
+  \param [in] source - where to get original string
+  \param [in] number - how many chars to copy
+  a memcpy syntax sugar for better unerstanding of copying strings
+*/
+
+void CopyFirstCharsString(char *target, char *source, size_t number);
+
+/*!
+\brief Function that parses one argument which was entered via command line
+\param [in] flag - string with one argument
+\param [out] equation - pointer to struct where to store value from argument
+*/
+ErrorCodes ParseOneFlag(CoeffsAndRoots *equation, char *flag);
+
+
+/*!
+\brief Function that parses arguments from command line
+\param [in] argc - number of arguments given in command line
+\param [in] argv - array of strings interpreted as arguments
+\param [out] equation - pointer to a structure where to store values given in command line
+*/
+
+ErrorCodes ParseCommandLine(CoeffsAndRoots *equation, int argc, char **argv);
+
+
+/*!
   function that scans coefficients of square equation from standart input
   and refer them to fields of struct "equation"
 
