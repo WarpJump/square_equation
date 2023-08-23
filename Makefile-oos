@@ -1,0 +1,20 @@
+all: compile
+
+compile: makedir main.o core.o
+	mkdir -p temp
+	g++ temp/main.o temp/core.o -o temp/main.out
+
+core.o: core.cpp
+	g++ -c core.cpp -o temp/core.o 
+
+main.o: main.cpp
+	g++ -c main.cpp -o temp/main.o
+
+makedir:
+	mkdir -p temp
+
+clean:
+	rm -f temp/core.o
+	rm -f temp/main.o
+	rm -f temp/main.out
+	rm -rf temp
