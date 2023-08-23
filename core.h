@@ -5,6 +5,7 @@
 
 #include <assert.h>
 #include <math.h>
+#include <string.h>
 #include <stdio.h>
 
 /*!
@@ -22,7 +23,7 @@
     }                                                                \
   } while (0)
 #else
-#define AssertError(...) (return Ok;)
+#define AssertError(...) do{} while(0)
 #endif
 
 /*!
@@ -88,6 +89,12 @@ inline bool CompareDoubles(double one, double two) {
       0.005;  //< constant determining permissible error for double comparison
   return fabs(one - two) < kEpsilonLocality;
 }
+
+/*! function that scans command line and interprets flags as coefficients
+*/
+
+
+ErrorCodes ParseCommandLine(CoeffsAndRoots &equation, int argc, char** argv);
 
 /*! function that scans coefficients, number of roots and roots from file with
  tests
@@ -190,7 +197,7 @@ void PrintRoots(CoeffsAndRoots* equation);
  \brief Primary function for square equation solving
 */
 
-void UserMode();
+void UserMode(int argc, char** argv);
 
 /*!
  \brief Primary function for computing test mode

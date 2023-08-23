@@ -13,11 +13,11 @@
 /*! Main program. Decides in compile-time in which mode to run.
  */
 
-int main() {
+int main(int argc, char** argv) {
 #ifdef TEST
   TestMode();
 #else
-  UserMode();
+  UserMode(argc, argv);
 #endif
   return 0;
 }

@@ -23,6 +23,82 @@ void Destroy(CoeffsAndRoots *structure) {
   structure->root_2 = NAN;
 }
 
+ErrorCodes ParseString(char *str, char char_1, char char_2, char **first_char,
+                       char **second_char) {
+  AssertError(str || first_char || second_char, ErrorCodes::NullPointer);
+  char *current_char = str;
+  *first_char = nullptr;
+  *second_char = nullptr;
+  while (*current_char != '\0') {
+    if (*current_char == char_1) {
+      *first_char = current_char;
+    } else if (*current_char == char_2) {
+      *second_char = current_char;
+    }
+    ++current_char;
+  }
+
+  return ErrorCodes::Ok;
+}
+
+char *CreateString(size_t valuable_size) {
+  char *new_string = reinterpret_cast<char *>(malloc(valuable_size + 1));
+  new_string[valuable_size] = '\0';
+  return new_string;
+}
+
+void DestroyString(char *old_string) { free(old_string); }
+
+void CopyFirstCharsString(char *target, char *source, size_t number) {
+  memcpy(target, source, number);
+}
+
+ErrorCodes ParseOneFlag(CoeffsAndRoots *equation, char *flag) {
+  char *mi_sign = nullptr;
+  char *eq_sign = nullptr;
+  ErrorCodes is_parse_error = ParseString(flag, '-', '=', &mi_sign, &eq_sign);
+
+  if (is_parse_error != ErrorCodes::Ok) {
+    return is_parse_error;
+  }
+
+  if ((mi_sign == nullptr) || (eq_sign == nullptr)) {
+    printf("Wrong symbols in flag arguments\n");
+    return ErrorCodes::Ok;
+  }
+
+  const int kSizeOfToken = eq_sign - mi_sign - 1;
+  char *token = CreateString(kSizeOfToken);
+  CopyFirstCharsString(token, mi_sign + 1, kSizeOfToken);
+
+  static const int kBase = 10;
+  int value = strtol(eq_sign + 1, NULL, kBase);
+
+  if ((*token) == 'a') {
+    equation->a_coef = value;
+  } else if ((*token) == 'b') {
+    equation->b_coef = value;
+  } else if ((*token) == 'c') {
+    equation->c_coef = value;
+  }
+
+  DestroyString(token);
+  printf("%d\n", value);
+  return ErrorCodes::Ok;
+}
+
+ErrorCodes ParseCommandLine(CoeffsAndRoots *equation, int argc, char **argv) {
+  AssertError(equation != nullptr, ErrorCodes::NullPointer);
+  AssertError(argv != nullptr, ErrorCodes::NullPointer);
+  equation->a_coef = 0;
+  equation->b_coef = 0;
+  equation->c_coef = 0;
+  for (int i = 1; i < argc; ++i) {
+    ParseOneFlag(equation, argv[i]);
+  }
+  return ErrorCodes::Ok;
+}
+
 ErrorCodes ScanCoeffs(CoeffsAndRoots *equation) {
   AssertError(equation != nullptr, ErrorCodes::NullPointer);
   scanf("%lf %lf %lf", &(equation->a_coef), &(equation->b_coef),
@@ -33,9 +109,8 @@ ErrorCodes ScanCoeffs(CoeffsAndRoots *equation) {
 
 ErrorCodes ScanData(FILE *data_file, CoeffsAndRoots *test, int *num_of_roots,
                     double *ans_1, double *ans_2) {
-  AssertError(test != nullptr, ErrorCodes::NullPointer);
-  AssertError((ans_1 != nullptr) && (ans_2 != nullptr),
-              ErrorCodes::NullPointer);
+  AssertError(test, ErrorCodes::NullPointer);
+  AssertError(ans_1 && ans_2, ErrorCodes::NullPointer);
   AssertError(ans_1 != ans_2, ErrorCodes::SamePointers);
 
   fscanf(data_file, "%lf %lf %lf %d %lf %lf", &(test->a_coef), &(test->b_coef),
@@ -110,7 +185,7 @@ ErrorCodes FindRootsOfSquareEquation(CoeffsAndRoots *equation) {
               ErrorCodes::InfiniteFloat);
 
   double discr = equation->b_coef * equation->b_coef -
-                       4 * equation->a_coef * equation->c_coef;
+                 4 * equation->a_coef * equation->c_coef;
 
   if (CompareDoubles(discr, 0)) {
     equation->root_1 = -equation->b_coef / (2 * equation->a_coef);
@@ -124,9 +199,9 @@ ErrorCodes FindRootsOfSquareEquation(CoeffsAndRoots *equation) {
     return ErrorCodes::Ok;
   }
 
-  double sqrtDiscr = sqrt(discr);
-  equation->root_1 = (-equation->b_coef + sqrtDiscr) / (2 * equation->a_coef);
-  equation->root_2 = (-equation->b_coef - sqrtDiscr) / (2 * equation->a_coef);
+  double sqrt_discr = sqrt(discr);
+  equation->root_1 = (-equation->b_coef + sqrt_discr) / (2 * equation->a_coef);
+  equation->root_2 = (-equation->b_coef - sqrt_discr) / (2 * equation->a_coef);
   equation->num_of_roots = Two;
 
   return ErrorCodes::Ok;
@@ -188,8 +263,8 @@ bool CompareRoots(CoeffsAndRoots *test, double ans_1, double ans_2) {
   return correct;
 }
 
-void PrintErrorCode(ErrorCodes errCode) {
-  switch (errCode) {
+void PrintErrorCode(ErrorCodes err_code) {
+  switch (err_code) {
     case NullPointer:
       fprintf(stderr, "User called function with null pointer\n");
       break;
@@ -212,14 +287,18 @@ void PrintErrorCode(ErrorCodes errCode) {
   }
 }
 
-void UserMode() {
+void UserMode(int argc, char **argv) {
   CoeffsAndRoots equation{};
 
   ErrorCodes code = ErrorCodes::Ok;
 
   Initialize(&equation);
 
-  code = ScanCoeffs(&equation);
+  if (argc == 1) {
+    code = ScanCoeffs(&equation);
+  } else {
+    code = ParseCommandLine(&equation, argc, argv);
+  }
 
   if (code != ErrorCodes::Ok) {
     PrintErrorCode(code);
