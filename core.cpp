@@ -23,19 +23,25 @@ void Destroy(CoeffsAndRoots *structure) {
   structure->root_2 = NAN;
 }
 
-ErrorCodes ParseString(char *str, char first_symbol_to_find, char second_symbol_to_find, char **first_char,
+ErrorCodes ParseString(char *str, char first_symbol_to_find,
+                       char second_symbol_to_find, char **first_char,
                        char **second_char) {
-  AssertError(str || first_char || second_char, ErrorCodes::NullPointer);
-  
+  AssertError(str && first_char && second_char, ErrorCodes::NullPointer);
+
   char *current_char = str;
   *first_char = nullptr;
   *second_char = nullptr;
-  
+
   while (*current_char != '\0') {
     if (*current_char == first_symbol_to_find) {
-      *first_char = current_char;
+      if (*first_char == nullptr) {
+        *first_char = current_char;
+      }
+
     } else if (*current_char == second_symbol_to_find) {
-      *second_char = current_char;
+      if (*second_char == nullptr) {
+        *second_char = current_char;
+      }
     }
     ++current_char;
   }
@@ -44,7 +50,8 @@ ErrorCodes ParseString(char *str, char first_symbol_to_find, char second_symbol_
 }
 
 char *CreateString(size_t valuable_size) {
-  char *new_string = reinterpret_cast<char *>(malloc(valuable_size + 1)); //TODO use calloc, 
+  char *new_string =
+      reinterpret_cast<char *>(malloc(valuable_size + 1));  // TODO use calloc,
   new_string[valuable_size] = '\0';
   return new_string;
 }
@@ -74,7 +81,7 @@ ErrorCodes ParseOneFlag(CoeffsAndRoots *equation, char *flag) {
   CopyFirstCharsString(token, mi_sign + 1, kSizeOfToken);
 
   static const int kBase = 10;
-  int value = strtol(eq_sign + 1, NULL, kBase);
+  double value = strtold(eq_sign + 1, NULL);
 
   if ((*token) == 'a') {
     equation->a_coef = value;
@@ -85,7 +92,6 @@ ErrorCodes ParseOneFlag(CoeffsAndRoots *equation, char *flag) {
   }
 
   DestroyString(token);
-  printf("%d\n", value);
   return ErrorCodes::Ok;
 }
 
@@ -174,6 +180,7 @@ ErrorCodes FindRootOfLinearEquation(CoeffsAndRoots *equation) {
     return ErrorCodes::Ok;
   }
   equation->root_1 = -equation->c_coef / equation->b_coef;
+
   equation->num_of_roots = One;
 
   return ErrorCodes::Ok;
@@ -283,7 +290,7 @@ void PrintErrorCode(ErrorCodes err_code) {
 
     case ZeroDivision:
       fprintf(stderr, "Function call with zero as divider.\n");
-      break; // TODO more spaces!
+      break;  // TODO more spaces!
     case Ok:
     default:
       fprintf(stderr, "lol cringe\n");

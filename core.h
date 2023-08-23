@@ -104,12 +104,12 @@ ErrorCodes ScanData(FILE* data_file, CoeffsAndRoots* test, int* num_of_roots,
                     double* ans_1, double* ans_2);
 
 /*!
-  \brief Function that takes a string and two characters, and founds pointers to last match of them in string
+  \brief Function that takes a string and two characters, and founds pointers to first match of them in string
   \param [in] str - pointer to string where to search
   \param [in] first_symbol_to_find - first symbol will be searched in string
   \param [in] second_symbol_to_find - second symbol will be searched in string
-  \param [out] first_char - pointer of last match of first_symbol_to_find in the string
-  \param [out] second_char - pointer of last match of second_symbol_to_find in the string
+  \param [out] first_char - pointer of first match of first_symbol_to_find in the string
+  \param [out] second_char - pointer of first match of second_symbol_to_find in the string
 
 */
 
