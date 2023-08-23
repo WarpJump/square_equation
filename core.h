@@ -8,8 +8,10 @@
 #include <string.h>
 #include <stdio.h>
 
+
+
 /*!
-\brief Excepption controlling block.
+\brief Exception controlling block.
 \param statement - boolian expression. If not true throws an error
 */
 
@@ -17,7 +19,7 @@
 #define AssertError(statement, error_code)                           \
   do {                                                               \
     if (!(statement)) {                                              \
-      fprintf(stderr, "Error in function %s in line %d\n", __func__, \
+      fprintf(stderr, "Error in function %s in line %d\n", __PRETTY_FUNCTION__, \
               __LINE__);                                             \
       return error_code;                                             \
     }                                                                \
@@ -46,6 +48,7 @@ enum ErrorCodes {
   SamePointers = 2,   ///< if two different values have same pointer
   InfiniteFloat = 3,  ///< if value if inf
   ZeroDivision = 4,   ///< if divider is zero
+  BadInput = 5,       ///< if user entered something strange
   Ok = 0              ///< if everything is normal
 
 };

@@ -1,18 +1,32 @@
-all: compile
+all: link
 
+OPTIONS = 
+
+COMPILE = 
 SRC =  $(shell pwd)
 
-compile: makedir main.o core.o
-	g++ ${SRC}/temp/main.o ${SRC}/temp/core.o -o ${SRC}/temp/main.out
+link: prelink
+	g++ ${SRC}/temp/__linked.o -o ${SRC}/temp/main.out
+
+prelink: makedir main.o core.o parsing.o stdinput.o
+	g++ -r ${SRC}/temp/main.o ${SRC}/temp/core.o ${SRC}/temp/parsing.o ${SRC}/temp/stdinput.o -o ${SRC}/temp/__linked.o
 
 core.o: core.cpp
 	g++ -c core.cpp -o ${SRC}/temp/core.o 
 
+parsing.o: parsing.cpp
+	g++ -c parsing.cpp -o ${SRC}/temp/parsing.o 
+
+stdinput.o: stdinput.cpp
+	g++ -c stdinput.cpp -o ${SRC}/temp/stdinput.o 
+
 main.o: main.cpp
-	g++ -c main.cpp -o ${SRC}/temp/main.o
+	g++ ${OPTIONS} -c main.cpp -o ${SRC}/temp/main.o
 
 makedir:
 	mkdir -p ${SRC}/temp
+	mkdir -p ${SRC}/temp/test
+	cp ${SRC}/test/data.txt ${SRC}/temp/test/data.txt
 
 clean:
 	rm -rf ${SRC}/temp

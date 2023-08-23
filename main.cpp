@@ -4,6 +4,8 @@
 */
 
 #include "core.h"
+#include "colors.h"
+
 
 /*! if macros TEST during compilation set to true, program run in test mode. If
  TEST set to false, program runs in real mode: takes three floating-point
