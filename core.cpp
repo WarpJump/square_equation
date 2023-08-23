@@ -4,8 +4,8 @@
 */
 
 #include "core.h"
-#include "colors.h"
 
+#include "colors.h"
 
 void Initialize(CoeffsAndRoots *structure) {
   structure->a_coef = NAN;
@@ -124,7 +124,7 @@ bool CompareOneRoot(CoeffsAndRoots *test, double ans_1) {
         ans_1, test->root_1);
     return false;
   }
-  printf("test OK: correct ans is %lf, program returned %lf\n", ans_1,
+  printf(GreenText("test OK:") " correct ans is %lf, program returned %lf\n", ans_1,
          test->root_1);
   return true;
 }
@@ -143,7 +143,7 @@ bool CompareTwoRoots(CoeffsAndRoots *test, double ans_1, double ans_2) {
     return false;
   }
   printf(
-      "test OK: roots are %.3lf and %.3lf, program returned %.3lf and %.3lf\n",
+      GreenText("test OK:") " roots are %.3lf and %.3lf, program returned %.3lf and %.3lf\n",
       ans_1, ans_2, test->root_1, test->root_2);
   return true;
 }
@@ -160,18 +160,18 @@ bool CompareRoots(CoeffsAndRoots *test, double ans_1, double ans_2) {
       break;
 
     case Inf:
-      fprintf(stderr, "test Ok: infinite roots exist\n");
+      fprintf(stderr, GreenText("test OK:") " infinite roots exist\n");
       correct = true;
       break;
 
     case Zero:
-      fprintf(stderr, "test Ok: no roots exist\n");
+      fprintf(stderr, GreenText("test OK:") " no roots exist\n");
       correct = true;
       break;
 
     case NotARoot:
     default:
-      fprintf(stderr, "test OK\n");
+      fprintf(stderr, GreenText("test OK:")"\n");
       return true;
   }
   return correct;
