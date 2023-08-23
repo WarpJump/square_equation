@@ -1,20 +1,18 @@
 all: compile
 
+SRC =  $(shell pwd)
+
 compile: makedir main.o core.o
-	mkdir -p temp
-	g++ temp/main.o temp/core.o -o temp/main.out
+	g++ ${SRC}/temp/main.o ${SRC}/temp/core.o -o ${SRC}/temp/main.out
 
 core.o: core.cpp
-	g++ -c core.cpp -o temp/core.o 
+	g++ -c core.cpp -o ${SRC}/temp/core.o 
 
 main.o: main.cpp
-	g++ -c main.cpp -o temp/main.o
+	g++ -c main.cpp -o ${SRC}/temp/main.o
 
 makedir:
-	mkdir -p temp
+	mkdir -p ${SRC}/temp
 
 clean:
-	rm -f temp/core.o
-	rm -f temp/main.o
-	rm -f temp/main.out
-	rm -rf temp
+	rm -rf ${SRC}/temp
