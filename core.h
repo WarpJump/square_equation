@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 /*!
 \brief Enum needed to store number of roots
 */
@@ -80,20 +79,27 @@ inline bool CompareDoubles(double one, double two) {
 ErrorCodes ParseCommandLine(CoeffsAndRoots& equation, int argc, char** argv);
 
 /*! function that scans coefficients, number of roots and roots from file with
- tests
+ tests.
+ \param [in] data_file - file which will be parsed.
+ \param [out] test - struct where scanned coeffs is saved.
+ \param [out] num_of_roots - number of roots readed from file.
+ \param [out] ans_1 - first correct answer.
+ \param [out] ans_2 - second correct answer.
+ \param [out] end_of_file - pointer to a bool which indicates if end of file
+ achieved.
 */
 
 ErrorCodes ScanData(FILE* data_file, CoeffsAndRoots* test, int* num_of_roots,
-                    double* ans_1, double* ans_2);
+                    double* ans_1, double* ans_2, bool* end_of_file);
 
 /*!
   \brief Function that takes a string and two characters, and founds pointers to
   first match of them in string \param [in] str - pointer to string where to
-  search \param [in] first_symbol_to_find - first symbol will be searched in
-  string \param [in] second_symbol_to_find - second symbol will be searched in
-  string \param [out] first_char - pointer of first match of
-  first_symbol_to_find in the string \param [out] second_char - pointer of first
-  match of second_symbol_to_find in the string
+  search. \param [in] first_symbol_to_find - first symbol will be searched in
+  string. \param [in] second_symbol_to_find - second symbol will be searched in
+  string. \param [out] first_char - pointer of first match of
+  first_symbol_to_find in the string. \param [out] second_char - pointer of
+  first match of second_symbol_to_find in the string
 
 */
 

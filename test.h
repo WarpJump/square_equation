@@ -1,4 +1,7 @@
-
+/*!
+\file
+\brief File with defines of custom asserts and defines of tests
+*/
 #define printerror(error)                                        \
   fprintf(stderr, RedText(error) " in function %s in line %d\n", \
           __PRETTY_FUNCTION__, __LINE__)
@@ -28,19 +31,20 @@
 test \param test_case_name - group of test name \param test_name - name of test
 */
 
-#define TEST(test_case_name, test_name)       \
-  int true_test = 0;                          \
-  int* test_param_name = &true_test;          \
-  for (int __one_iteration = 0; __one_iteration != 1; \
-       ++__one_iteration, printf(GreenText("CORRECT TESTS") " %d\n", true_test))
+#define TEST(test_case_name, test_name)                                  \
+  int true_test = 0;                                                     \
+  int* test_param_name = &true_test;                                     \
+  for (int __one_iteration = 0; __one_iteration != 1; ++__one_iteration, \
+           printf(GreenText("CORRECT TESTS") " %d\n", true_test))
 
-#define ASSERT_EQ(first, second)               \
-  do {                                         \
-    if (first != second) {                     \
-      printerror("EQUATION ASSERTION FAILED"); \
-      break;                                   \
-    }                                          \
-    (*test_param_name)++;                      \
+#define ASSERT_EQ(first, second)                \
+  do {                                          \
+    if (first != second) {                      \
+      printerror("EQUATION ASSERTION FAILED");  \
+      printf("%d != %d \n\n\n", first, second); \
+      break;                                    \
+    }                                           \
+    (*test_param_name)++;                       \
   } while (0)
 
 #define ASSERT_TRUE(statement)                \

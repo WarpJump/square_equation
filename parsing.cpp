@@ -62,11 +62,11 @@ ErrorCodes ParseOneFlag(CoeffsAndRoots *equation, char *flag) {
     return ErrorCodes::Ok;
   }
 
-  const int kSizeOfToken = eq_sign - mi_sign - 1;
+  const unsigned long long kSizeOfToken = static_cast<unsigned long long>(eq_sign - mi_sign - 1);
   char *token = CreateString(kSizeOfToken);
   CopyFirstCharsString(token, mi_sign + 1, kSizeOfToken);
 
-  double value = strtold(eq_sign + 1, NULL);
+  double value = strtod(eq_sign + 1, NULL);
 
   if ((*token) == 'a') {
     equation->a_coef = value;

@@ -245,25 +245,24 @@ void UserMode(int argc, char **argv) {
 
 void TestMode() {
   //TODO count tests automatically
-  
+
   double ans_1 = NAN;
   double ans_2 = NAN;
   int num_of_roots = 0;
 
-  FILE *data_file = fopen("test/data.txt", "re");
+  FILE *data_file = fopen("test/data.txt", "r");
 
   int num_of_tests = 0;
   int correct_tests = 0;
-
-  fscanf(data_file, "%d", &num_of_tests);
 
   CoeffsAndRoots test{};
 
   ErrorCodes code = ErrorCodes::Ok;
 
   TEST("check all tests", "test") {
-    for (int i = 0; i < num_of_tests; ++i) {
-      code = ScanData(data_file, &test, &num_of_roots, &ans_1, &ans_2);
+    bool end_of_file = false;
+    code = ScanData(data_file, &test, &num_of_roots, &ans_1, &ans_2, &end_of_file);
+    while (!end_of_file) {
       if (code != ErrorCodes::Ok) {
         PrintErrorCode(code);
       }
@@ -275,6 +274,8 @@ void TestMode() {
       ASSERT_EQ(num_of_roots, test.num_of_roots);
 
       ASSERT_TRUE(CompareRoots(&test, ans_1, ans_2));
+
+      code = ScanData(data_file, &test, &num_of_roots, &ans_1, &ans_2, &end_of_file);
     }
   }
   fclose(data_file);
