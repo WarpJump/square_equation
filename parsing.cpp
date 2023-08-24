@@ -35,7 +35,7 @@ ErrorCodes ParseString(char *str, char first_symbol_to_find,
 
 char *CreateString(size_t valuable_size) {
   char *new_string = reinterpret_cast<char *>(
-      calloc(valuable_size + 1, sizeof(char)));  // TODO use calloc,
+      calloc(valuable_size + 1, sizeof(char)));
   new_string[valuable_size] = '\0';
   return new_string;
 }

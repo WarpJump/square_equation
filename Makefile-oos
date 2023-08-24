@@ -2,8 +2,9 @@ all: link
 
 OPTIONS = 
 
-COMPILE = 
+COMPILE =
 SRC =  $(shell pwd)
+
 
 link: prelink
 	g++ ${SRC}/temp/__linked.o -o ${SRC}/temp/main.out
@@ -21,12 +22,22 @@ stdinput.o: stdinput.cpp
 	g++ -c stdinput.cpp -o ${SRC}/temp/stdinput.o 
 
 main.o: main.cpp
-	g++ ${OPTIONS} -c main.cpp -o ${SRC}/temp/main.o
+	g++ ${OPTIONS} ${COMPILE} -c main.cpp -o ${SRC}/temp/main.o
 
 makedir:
 	mkdir -p ${SRC}/temp
 	mkdir -p ${SRC}/temp/test
 	cp ${SRC}/test/data.txt ${SRC}/temp/test/data.txt
 
+docs:
+	doxygen ${SRC}/doxygen.config
+
+tests: OPTIONS:="-DTEST"
+tests: link
+
+
 clean:
 	rm -rf ${SRC}/temp
+
+
+

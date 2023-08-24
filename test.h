@@ -31,8 +31,8 @@ test \param test_case_name - group of test name \param test_name - name of test
 #define TEST(test_case_name, test_name)       \
   int true_test = 0;                          \
   int* test_param_name = &true_test;          \
-  for (int abracadabra = 0; abracadabra != 1; \
-       ++abracadabra, printf(GreenText("CORRECT TESTS") " %d\n", true_test))
+  for (int __one_iteration = 0; __one_iteration != 1; \
+       ++__one_iteration, printf(GreenText("CORRECT TESTS") " %d\n", true_test))
 
 #define ASSERT_EQ(first, second)               \
   do {                                         \
