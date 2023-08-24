@@ -4,8 +4,9 @@
 */
 
 #include "core.h"
-#include "test.h"
+
 #include "colors.h"
+#include "test.h"
 
 void Initialize(CoeffsAndRoots *structure) {
   structure->a_coef = NAN;
@@ -124,8 +125,8 @@ bool CompareOneRoot(CoeffsAndRoots *test, double ans_1) {
         ans_1, test->root_1);
     return false;
   }
-  printf(GreenText("test OK:") " correct ans is %lf, program returned %lf\n", ans_1,
-         test->root_1);
+  printf(GreenText("test OK:") " correct ans is %lf, program returned %lf\n",
+         ans_1, test->root_1);
   return true;
 }
 
@@ -171,7 +172,7 @@ bool CompareRoots(CoeffsAndRoots *test, double ans_1, double ans_2) {
 
     case NotARoot:
     default:
-      fprintf(stderr, GreenText("test OK:")"\n");
+      fprintf(stderr, GreenText("test OK:") "\n");
       return true;
   }
   return correct;
@@ -204,6 +205,7 @@ void PrintErrorCode(ErrorCodes err_code) {
 
     case BadInput:
       fprintf(stderr, "Sorry but you entered not a decimal or float number.\n");
+      break;
     case Ok:
     default:
       fprintf(stderr, "lol cringe\n");
@@ -219,9 +221,9 @@ void UserMode(int argc, char **argv) {
   Initialize(&equation);
 
   if (argc == 1) {
-    do{
+    do {
       code = ScanCoeffs(&equation);
-    } while(code != ErrorCodes::Ok);
+    } while (code != ErrorCodes::Ok);
   } else {
     code = ParseCommandLine(&equation, argc, argv);
   }
@@ -257,22 +259,22 @@ void TestMode() {
 
   ErrorCodes code = ErrorCodes::Ok;
 
-  for (int i = 0; i < num_of_tests; ++i) {
-    code = ScanData(data_file, &test, &num_of_roots, &ans_1, &ans_2);
-    if (code != ErrorCodes::Ok) {
-      PrintErrorCode(code);
+  TEST("check all tests", "test") {
+    for (int i = 0; i < num_of_tests; ++i) {
+      code = ScanData(data_file, &test, &num_of_roots, &ans_1, &ans_2);
+      if (code != ErrorCodes::Ok) {
+        PrintErrorCode(code);
+      }
+      code = SolveEquation(&test);
+      if (code != ErrorCodes::Ok) {
+        PrintErrorCode(code);
+      }
+
+      ASSERT_EQ(num_of_roots, test.num_of_roots);
+
+      ASSERT_TRUE(CompareRoots(&test, ans_1, ans_2));
     }
-    code = SolveEquation(&test);
-    if (code != ErrorCodes::Ok) {
-      PrintErrorCode(code);
-    }
-    if (num_of_roots != test.num_of_roots) {
-      fprintf(stderr, "number of roots does not match!\n");
-      continue;
-    }
-    correct_tests += static_cast<int>(CompareRoots(&test, ans_1, ans_2));
   }
-  fprintf(stderr, "tests correct %d / %d\n", correct_tests, num_of_tests);
   fclose(data_file);
 
   Destroy(&test);
