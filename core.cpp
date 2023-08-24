@@ -4,7 +4,7 @@
 */
 
 #include "core.h"
-
+#include "test.h"
 #include "colors.h"
 
 void Initialize(CoeffsAndRoots *structure) {
@@ -219,7 +219,9 @@ void UserMode(int argc, char **argv) {
   Initialize(&equation);
 
   if (argc == 1) {
-    code = ScanCoeffs(&equation);
+    do{
+      code = ScanCoeffs(&equation);
+    } while(code != ErrorCodes::Ok);
   } else {
     code = ParseCommandLine(&equation, argc, argv);
   }

@@ -1,6 +1,6 @@
-#include "core.h"
 #include "colors.h"
-
+#include "core.h"
+#include "test.h"
 
 /*!
     \file
