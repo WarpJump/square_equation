@@ -244,7 +244,6 @@ void UserMode(int argc, char **argv) {
 }
 
 void TestMode() {
-  //TODO count tests automatically
 
   double ans_1 = NAN;
   double ans_2 = NAN;
