@@ -243,41 +243,53 @@ void UserMode(int argc, char **argv) {
   Destroy(&equation);
 }
 
-void TestMode() {
+void TestMode(int argc, char** argv) {
 
   double ans_1 = NAN;
   double ans_2 = NAN;
   int num_of_roots = 0;
 
-  FILE *data_file = fopen("test/data.txt", "r");
+  if(argc != 2){
+    fprintf(stderr, "Wrong num of arguments\n");
+  }
+
+  FILE *data_file = fopen(argv[1], "r");
+  if((data_file == nullptr) || ferror(data_file)){
+    fprintf(stderr, "File not found or could not be opened\n");
+    return;
+  }
 
   int num_of_tests = 0;
   int correct_tests = 0;
 
-  CoeffsAndRoots test{};
 
+  //struct that contains input values of current test
+  CoeffsAndRoots test_values{};
+
+
+  //value that specifies status code of current test
   ErrorCodes code = ErrorCodes::Ok;
 
   TEST("check all tests", "test") {
     bool end_of_file = false;
-    code = ScanData(data_file, &test, &num_of_roots, &ans_1, &ans_2, &end_of_file);
+    code = ScanData(data_file, &test_values, &num_of_roots, &ans_1, &ans_2, &end_of_file);
     while (!end_of_file) {
       if (code != ErrorCodes::Ok) {
         PrintErrorCode(code);
       }
-      code = SolveEquation(&test);
+      code = SolveEquation(&test_values);
       if (code != ErrorCodes::Ok) {
         PrintErrorCode(code);
       }
 
-      ASSERT_EQ(num_of_roots, test.num_of_roots);
+      ASSERT_EQ(num_of_roots, test_values.num_of_roots);
 
-      ASSERT_TRUE(CompareRoots(&test, ans_1, ans_2));
+      ASSERT_TRUE(CompareRoots(&test_values, ans_1, ans_2));
 
-      code = ScanData(data_file, &test, &num_of_roots, &ans_1, &ans_2, &end_of_file);
+      code = ScanData(data_file, &test_values, &num_of_roots, &ans_1, &ans_2, &end_of_file);
     }
   }
   fclose(data_file);
 
-  Destroy(&test);
+  Destroy(&test_values);
 }

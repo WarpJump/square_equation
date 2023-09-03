@@ -29,6 +29,12 @@ make -f Makefile-oos docs
 
 ## Usage
 
+* When running in test mode, program takes only one command-line argument - path to file with tests. Example of usage:
+```
+main.out test/data.txt 
+```
+
+
 * To specify coefficients using command-line as flags, run
 ```
 ./main.out -flag=[float]

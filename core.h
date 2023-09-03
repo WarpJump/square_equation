@@ -241,12 +241,16 @@ void PrintRoots(CoeffsAndRoots* equation);
 
 /*!
  \brief Primary function for square equation solving
+ \param [in] argc - number of command-line arguments.
+ \param [in] argv - pointer to the beginning of array strings with arguments  
 */
 
 void UserMode(int argc, char** argv);
 
 /*!
  \brief Primary function for computing test mode
+ \param [in] argc - number of command-line arguments.
+ \param [in] argv - pointer to the beginning of array strings with arguments. Takes only one argument
 */
 
-void TestMode();
+void TestMode(int argc, char** argv);

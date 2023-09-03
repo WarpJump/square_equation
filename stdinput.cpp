@@ -29,11 +29,13 @@ ErrorCodes ScanData(FILE *data_file, CoeffsAndRoots *test, int *num_of_roots,
   AssertError(ans_1 && ans_2, ErrorCodes::NullPointer);
   AssertError(ans_1 != ans_2, ErrorCodes::SamePointers);
 
+
+  const int CorrectScanArgc = 6;
   int ArgsInputed =
       fscanf(data_file, "%lf %lf %lf %d %lf %lf", &(test->a_coef),
              &(test->b_coef), &(test->c_coef), num_of_roots, ans_1, ans_2);
 
-  if(ArgsInputed == 6){
+  if(ArgsInputed == CorrectScanArgc){
     return ErrorCodes::Ok;
   }
   if(ArgsInputed == -1){

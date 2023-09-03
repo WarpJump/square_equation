@@ -16,7 +16,7 @@
 
 int main(int argc, char** argv) {
 #ifdef TEST
-  TestMode();
+  TestMode(argc, argv);
 #else
   UserMode(argc, argv);
 #endif
