@@ -249,8 +249,13 @@ void TestMode(int argc, char** argv) {
   double ans_2 = NAN;
   int num_of_roots = 0;
 
-  if(argc != 2){
+  if(argc == 1){
+    fprintf(stderr, "Test file not specified\n");
+    return;
+  }
+  if(argc > 2){
     fprintf(stderr, "Wrong num of arguments\n");
+    return;
   }
 
   FILE *data_file = fopen(argv[1], "r");
